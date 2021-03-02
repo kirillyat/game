@@ -21,7 +21,7 @@ struct Player
 {
   explicit Player(Point pos = {.x = 10, .y = 10}) :
                  coords(pos), old_coords(coords), skin("resources/1.png") {};
-
+                 
   bool Moved() const;
   void ProcessInput(MovementDir dir);
   void Draw(Image &screen);
