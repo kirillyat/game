@@ -35,19 +35,25 @@ struct Player
     int health
   );
   explicit Player(Point pos = {.x = 10, .y = 10}) :
-                 coords(pos), old_coords(coords), health(5) {};
+                 coords(pos), old_coords(coords), health(100) {};
                  
-  bool Moved() const;
   void SetLevelStyle();
   void SetHeroSkin();
-  void LevelBuffer();
+
+  
   void ProcessInput(MovementDir dir);
   void Draw(Image &screen);
   void DrawLevel(Image &screen);
+  void InitLevel();
+
+  bool Moved() const;
   bool CheckCoords();
   bool CheckPos(Point pos);
+  bool CheckFin(Point pos);
+  bool CheckHole(Point pos);
   void openCurrentLevelMap();
   char lookup(Point pos);
+
 private:
   Image* wall_tale;
 	Image* weak_wall_tale;
@@ -56,7 +62,9 @@ private:
   Image* finish_tale;
   Image* heroSkin;
   Image* level;
+
   std::ifstream levelinput;
+  bool wait;
   int health;
   int level_n;
   Point coords {.x = 340, .y = 340};

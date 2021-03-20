@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <ctime> 
 
 Player::Player (
     Point pos,
@@ -24,7 +25,7 @@ Player::Player (
   this->level = new Image(640, 640, 4);
   this->level_n = 1;
   DrawLevel(*(this->level));
-
+  this-> wait = false;
 }
 
 bool Player::Moved() const
@@ -77,6 +78,41 @@ void Player::Draw(Image &screen)
   }
   screen.PutImage(0, 0, *(this->level));
   screen.PutImage(coords.x, coords.y, *(this->heroSkin));
+
+  if (CheckFin(coords)) {
+    Image win = Image("resources/win.png");
+    screen.PutImage(0,0, win);
+    std::clock_t t1, t2, t3;
+ 
+    t1 = std::clock();
+    t2 = std::clock();
+    while (t2 - t1 < 1000000)
+    {
+      t2 = std::clock();
+    }
+    
+     screen.PutImage(0,0, win);
+     this->level_n++;
+     InitLevel();
+    
+  }
+  if (CheckHole(coords)) {
+    //Image win = Image("resources/lose.png");
+    //screen.PutImage(0,0, win);
+    std::clock_t t1, t2, t3;
+ 
+    t1 = std::clock();
+    t2 = std::clock();
+    while (t2 - t1 < 1000000)
+    {
+      t2 = std::clock();
+    }
+    
+     //screen.PutImage(0,0, win);
+     this->level_n--;
+     InitLevel();
+    
+  }
 }
 
 
@@ -126,18 +162,29 @@ bool Player::CheckCoords()
 
 bool Player::CheckPos(Point pos)
 {
-  this->levelinput.seekg(0);
-  char buff[40];
-  int x = pos.x,
-      y = 640-pos.y;
-  x = x/16;
-  y = y/16;
-
-	for (int i=0; i<=y; ++i) {
-    this->levelinput.getline(buff, 40);
+  char c = lookup(pos);
+  
+  if (c == '.' || c == ' ' || c == 'x') {
+    return true;
+  } else {
+    return false;
   }
-  printf("%c,%i, %i \n", buff[x], x, y);
-  if (buff[x] == '.' || buff[x] == ' ' || buff[x] == '?') {
+}
+
+bool Player::CheckFin(Point pos)
+{
+  if('x' == lookup({.x=coords.x + (*(this->heroSkin)).Height()/2, .y=coords.y + (*(this->heroSkin)).Width()/2}))
+  {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool Player::CheckHole(Point pos)
+{
+  if(' ' == lookup({.x=coords.x + (*(this->heroSkin)).Height()/2, .y=coords.y + (*(this->heroSkin)).Width()/2}))
+  {
     return true;
   } else {
     return false;
@@ -157,4 +204,15 @@ this->levelinput.seekg(0);
     this->levelinput.getline(buff, 40);
   }
   return buff[x];
+}
+
+
+void Player::InitLevel()
+{
+  DrawLevel(*(this->level));
+  this->coords.x = 340;
+  this->coords.y = 340;
+  this->old_coords.x = 340;
+  this->old_coords.y = 340;
+
 }
