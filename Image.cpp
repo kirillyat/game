@@ -5,8 +5,10 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include <fstream>
 #include <iostream>
-
+#include <algorithm>
+#include <string>
 
 Image::Image(const std::string &a_path)
 {
@@ -29,7 +31,6 @@ Image::Image(int a_width, int a_height, int a_channels)
     self_allocated = true;
   }
 }
-
 
 int Image::Save(const std::string &a_path)
 {
@@ -61,3 +62,15 @@ Image::~Image()
     stbi_image_free(data);
   }
 }
+
+void Image::PutImage(int start_x, int start_y, Image& img)
+{
+	int max_x = (start_x + img.Width()  < this->Width() ) ? start_x + img.Width()  : this->Width();
+  int max_y = (start_y + img.Height() < this->Height()) ? start_y + img.Height() : this->Height();
+	
+	for (int i=start_x; i < max_x; ++i) {
+	for (int j=start_y; j < max_y; ++j) {
+			this->PutPixel(i, j, img.GetPixel(max_x-i-1, max_y-j-1));
+  }}
+}
+

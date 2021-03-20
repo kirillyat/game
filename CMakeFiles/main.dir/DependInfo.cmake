@@ -5,7 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/glad.c" "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/CMakeFiles/main.dir/glad.c.o"
+  "/Users/kirillyat/Developer/game/glad.c" "/Users/kirillyat/Developer/game/CMakeFiles/main.dir/glad.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
 
@@ -16,9 +16,9 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "/usr/local/include"
   )
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/Image.cpp" "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/CMakeFiles/main.dir/Image.cpp.o"
-  "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/Player.cpp" "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/CMakeFiles/main.dir/Player.cpp.o"
-  "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/main.cpp" "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/CMakeFiles/main.dir/main.cpp.o"
+  "/Users/kirillyat/Developer/game/Image.cpp" "/Users/kirillyat/Developer/game/CMakeFiles/main.dir/Image.cpp.o"
+  "/Users/kirillyat/Developer/game/Player.cpp" "/Users/kirillyat/Developer/game/CMakeFiles/main.dir/Player.cpp.o"
+  "/Users/kirillyat/Developer/game/main.cpp" "/Users/kirillyat/Developer/game/CMakeFiles/main.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

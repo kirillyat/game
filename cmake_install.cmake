@@ -1,4 +1,4 @@
-# Install script for directory: /Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp
+# Install script for directory: /Users/kirillyat/Developer/game
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/kirillyat/Developer/game/msu_cmc_cg_2021/template1_cpp/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/kirillyat/Developer/game/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

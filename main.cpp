@@ -5,7 +5,7 @@
 #define GLFW_DLL
 #include <GLFW/glfw3.h>
 
-constexpr GLsizei WINDOW_WIDTH = 1000, WINDOW_HEIGHT = 800;
+constexpr GLsizei WINDOW_WIDTH = 640, WINDOW_HEIGHT = 640;
 
 struct InputState
 {
@@ -147,12 +147,12 @@ int main(int argc, char** argv)
 	while (gl_error != GL_NO_ERROR)
 		gl_error = glGetError();
 
-	Point starting_pos{.x = WINDOW_WIDTH / 2, .y = WINDOW_HEIGHT / 2};
-	Player player{starting_pos};
+	Point starting_pos{.x = 100, .y = WINDOW_HEIGHT / 2};
+	Player player(starting_pos, "resources/wall.png", "resources/weak_wall.png", "resources/floor.png", "resources/hole.png", "resources/fin.png",  "resources/hero.png", 100);
 
-	Image img("resources/tex.png");
 	Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
-
+  //char levelpath[] = "levels/level1.txt";
+   
   glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);  GL_CHECK_ERRORS;
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); GL_CHECK_ERRORS;
 
@@ -164,9 +164,12 @@ int main(int argc, char** argv)
 		lastFrame = currentFrame;
     glfwPollEvents();
 
-    processPlayerMovement(player);
-    player.Draw(screenBuffer);
 
+    processPlayerMovement(player);
+    
+    //player.DrawLevel(screenBuffer, levelpath);
+    player.Draw(screenBuffer);
+  
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); GL_CHECK_ERRORS;
     glDrawPixels (WINDOW_WIDTH, WINDOW_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, screenBuffer.Data()); GL_CHECK_ERRORS;
 

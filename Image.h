@@ -19,6 +19,7 @@ struct Image
 {
   explicit Image(const std::string &a_path);
   Image(int a_width, int a_height, int a_channels);
+  void  DrawLevel(const std::string &a_path);
 
   int Save(const std::string &a_path);
 
@@ -28,9 +29,10 @@ struct Image
   size_t  Size() const { return size; }
   Pixel*  Data()       { return data; }
 
+
   Pixel GetPixel(int x, int y) { return data[width * y + x]; }
   void  PutPixel(int x, int y, const Pixel &pix) { data[width* y + x] = pix; }
-
+  void  PutImage(int start_x, int start_y, Image& img); 
   ~Image();
 
 private:
