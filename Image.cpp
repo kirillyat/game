@@ -74,3 +74,13 @@ void Image::PutImage(int start_x, int start_y, Image& img)
   }}
 }
 
+void Image::PutREVERSEDImage(int start_x, int start_y, Image& img)
+{
+	int max_x = (start_x + img.Width()  < this->Width() ) ? start_x + img.Width()  : this->Width();
+  int max_y = (start_y + img.Height() < this->Height()) ? start_y + img.Height() : this->Height();
+	
+	for (int i=start_y; i < max_y; ++i) {
+	for (int j=start_x; j < max_x; ++j) {
+			this->PutPixel(max_x-j, i, img.GetPixel(max_x-j,max_y-i));
+  }}
+}

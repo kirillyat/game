@@ -53,6 +53,9 @@ void processPlayerMovement(Player &player)
     player.ProcessInput(MovementDir::LEFT);
   else if (Input.keys[GLFW_KEY_D])
     player.ProcessInput(MovementDir::RIGHT);
+  if (Input.keys[GLFW_KEY_X])
+    player.ProcessInput(MovementDir::ATTACK);
+
 }
 
 void OnMouseButtonClicked(GLFWwindow* window, int button, int action, int mods)
@@ -148,7 +151,7 @@ int main(int argc, char** argv)
 		gl_error = glGetError();
 
 	Point starting_pos{.x = 100, .y = WINDOW_HEIGHT / 2};
-	Player player(starting_pos, "resources/wall.png", "resources/weak_wall.png", "resources/floor.png", "resources/hole.png", "resources/fin.png",  "resources/hero.png", 100);
+	Player player(starting_pos, "resources/wall.png", "resources/weak_wall.png", "resources/floor.png", "resources/hole.png", "resources/fin.png",  "resources/hero.png");
 
 	Image screenBuffer(WINDOW_WIDTH, WINDOW_HEIGHT, 4);
   //char levelpath[] = "levels/level1.txt";

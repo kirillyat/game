@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-
+const int max_level = 5;
 struct Point
 {
   int x;
@@ -18,7 +18,8 @@ enum class MovementDir
   UP,
   DOWN,
   LEFT,
-  RIGHT
+  RIGHT,
+  ATTACK
 };
 
 
@@ -31,8 +32,7 @@ struct Player
     const std::string &floor_tale_path,
     const std::string &hole_tale_path,
     const std::string &finish_path,
-    const std::string &heroSkin_path,
-    int health
+    const std::string &heroSkin_path
   );
   explicit Player(Point pos = {.x = 10, .y = 10}) :
                  coords(pos), old_coords(coords), health(100) {};
@@ -53,6 +53,10 @@ struct Player
   bool CheckHole(Point pos);
   void openCurrentLevelMap();
   char lookup(Point pos);
+  void replace(Point pos, char distsyb);
+  void replaceweakwall (Point pos);
+  void break_weak_walls_around();
+  void initLevelString();
 
 private:
   Image* wall_tale;
@@ -62,9 +66,10 @@ private:
   Image* finish_tale;
   Image* heroSkin;
   Image* level;
-
+  
   std::ifstream levelinput;
   bool wait;
+  bool lose_win_flag;
   int health;
   int level_n;
   Point coords {.x = 340, .y = 340};
@@ -72,6 +77,7 @@ private:
   Pixel color {.r = 0, .g = 0, .b = 254, .a = 255};
   int move_speed = 4;
 
+  char level_string[40][40];
 };
 
 #endif //MAIN_PLAYER_H

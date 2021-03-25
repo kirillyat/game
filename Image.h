@@ -33,6 +33,7 @@ struct Image
   Pixel GetPixel(int x, int y) { return data[width * y + x]; }
   void  PutPixel(int x, int y, const Pixel &pix) { data[width* y + x] = pix; }
   void  PutImage(int start_x, int start_y, Image& img); 
+  void PutREVERSEDImage(int start_x, int start_y, Image& img);
   ~Image();
 
 private:

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <ctime> 
@@ -11,8 +12,7 @@ Player::Player (
     const std::string &floor_tale_path,
     const std::string &hole_tale_path,
     const std::string &finish_path,
-    const std::string &heroSkin_path,
-    int health
+    const std::string &heroSkin_path
   )
 {
   this->wall_tale      = new Image(wall_tale_path);
@@ -21,11 +21,14 @@ Player::Player (
   this->hole_tale      = new Image(hole_tale_path);
   this->finish_tale     = new Image(finish_path);
   this->heroSkin       = new Image(heroSkin_path);
-  this->health = health;
+  this->health = 3;
   this->level = new Image(640, 640, 4);
   this->level_n = 1;
+  openCurrentLevelMap();
   DrawLevel(*(this->level));
   this-> wait = false;
+  this->lose_win_flag = false;
+  
 }
 
 bool Player::Moved() const
@@ -38,6 +41,13 @@ bool Player::Moved() const
 
 void Player::ProcessInput(MovementDir dir)
 {
+  if (this->lose_win_flag){
+    return;
+  }
+  
+ 
+  
+  
   int move_dist = move_speed * 1;
   switch(dir)
   {
@@ -57,6 +67,9 @@ void Player::ProcessInput(MovementDir dir)
       old_coords.x = coords.x;
       coords.x += move_dist;
       break;
+    case MovementDir::ATTACK:
+      break_weak_walls_around();
+    break;
     default:
       break;
   }
@@ -64,6 +77,16 @@ void Player::ProcessInput(MovementDir dir)
 
 void Player::Draw(Image &screen)
 {
+  if (this->lose_win_flag){
+    if (this->health>0) {
+      Image pic = Image("resources/win.png");
+      screen.PutREVERSEDImage(10,10, pic);
+    }else {
+      Image pic = Image("resources/lose.png");
+      screen.PutREVERSEDImage(10,10, pic);
+    }
+    return;
+  }
   if(Moved())
   {
     if (CheckCoords()) {
@@ -80,58 +103,46 @@ void Player::Draw(Image &screen)
   screen.PutImage(coords.x, coords.y, *(this->heroSkin));
 
   if (CheckFin(coords)) {
-    Image win = Image("resources/win.png");
-    screen.PutImage(0,0, win);
-    std::clock_t t1, t2, t3;
- 
-    t1 = std::clock();
-    t2 = std::clock();
-    while (t2 - t1 < 1000000)
-    {
-      t2 = std::clock();
-    }
     
-     screen.PutImage(0,0, win);
-     this->level_n++;
+     if (this->level_n < max_level)
+     {
+       this->level_n++;
+       openCurrentLevelMap();
+     } else {
+      this->lose_win_flag = true;
+      this->health = 3;
+     }
      InitLevel();
     
   }
   if (CheckHole(coords)) {
-    //Image win = Image("resources/lose.png");
-    //screen.PutImage(0,0, win);
-    std::clock_t t1, t2, t3;
- 
-    t1 = std::clock();
-    t2 = std::clock();
-    while (t2 - t1 < 1000000)
-    {
-      t2 = std::clock();
-    }
-    
-     //screen.PutImage(0,0, win);
-     this->level_n--;
+
+       this->level_n-=1;
+       this->health-=1;
+       if ((this->health==0)||(this->level_n==0))
+       { 
+         this->lose_win_flag = true;
+         this->health = 0;
+       }
      InitLevel();
-    
   }
+  
 }
 
 
 void Player::DrawLevel(Image &screen)
-{
-  char buff[40];
-  openCurrentLevelMap();
+{ 
 	for (int i=0; i<40; ++i) {
-    this->levelinput.getline(buff, 40);
 		for (int j=0; j<40; ++j) {
-			if (buff[j] == '#') {
+			if (this->level_string[i][j] == '#') {
 				screen.PutImage(640-(j+1)*tileSize, i*tileSize, *(this->wall_tale));
-			} else if (buff[j] == '.' || buff[j] == '@') {// todo
+			} else if (this->level_string[i][j] == '.' || this->level_string[i][j] == '@') {// todo
 				screen.PutImage(640-(j+1)*tileSize, i*tileSize, *(this->floor_tale));
-			} else if (buff[j] == ' ') {
+			} else if (this->level_string[i][j] == ' ') {
 				screen.PutImage(640-(j+1)*tileSize, i*tileSize, *(this->hole_tale));
-			} else if (buff[j] == '*') {
+			} else if (this->level_string[i][j] == '*') {
         screen.PutImage(640-(j+1)*tileSize, i*tileSize, *(this->weak_wall_tale));
-      }else if (buff[j] == 'x') {
+      }else if (this->level_string[i][j] == 'x') {
         screen.PutImage(640-(j+1)*tileSize, i*tileSize, *(this->finish_tale));
       }
 		}
@@ -143,6 +154,9 @@ void Player::openCurrentLevelMap()
   this->levelinput.close();
   std::string genLevelPath = "levels/level"+std::to_string(this->level_n)+".txt";
   this->levelinput.open(genLevelPath);
+  this->levelinput.seekg(0);
+  initLevelString();
+  this->levelinput.seekg(0);
 }
 
 
@@ -193,19 +207,33 @@ bool Player::CheckHole(Point pos)
 
 char Player::lookup(Point pos)
 {
-this->levelinput.seekg(0);
-  char buff[40];
+int x = pos.x,
+      y = 640-pos.y;
+  x = x/16;
+  y = y/16;
+
+	return this->level_string[y][x];
+}
+void Player::replace(Point pos, char distsyb)
+{
   int x = pos.x,
       y = 640-pos.y;
   x = x/16;
   y = y/16;
 
-	for (int i=0; i<=y; ++i) {
-    this->levelinput.getline(buff, 40);
-  }
-  return buff[x];
-}
+	this->level_string[y][x] = distsyb;
 
+}
+void Player::replaceweakwall (Point pos)
+{
+  if ((pos.x < 1 || pos.x > 639)||(pos.y < 1 || pos.y > 639)) {
+    return;
+  }
+  if (lookup(pos) == '*'){
+    replace(pos, '.');
+  }
+
+}
 
 void Player::InitLevel()
 {
@@ -215,4 +243,39 @@ void Player::InitLevel()
   this->old_coords.x = 340;
   this->old_coords.y = 340;
 
+}
+
+void Player::break_weak_walls_around()
+{
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height() +8, .y=coords.y});
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height(), .y=coords.y -8});
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height() +8, .y=coords.y-8});
+
+  replaceweakwall({.x=coords.x -8, .y=coords.y+(*(this->heroSkin)).Height()});
+  replaceweakwall({.x=coords.x , .y=coords.y +8+(*(this->heroSkin)).Height()});
+  replaceweakwall({.x=coords.x -8, .y=coords.y+8+(*(this->heroSkin)).Height()});
+
+  replaceweakwall({.x=coords.x -8, .y=coords.y});
+  replaceweakwall({.x=coords.x , .y=coords.y -8});
+  replaceweakwall({.x=coords.x -8, .y=coords.y-8});
+
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height() +8, .y=coords.y+(*(this->heroSkin)).Height()});
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height(), .y=coords.y +8+(*(this->heroSkin)).Height()});
+  replaceweakwall({.x=coords.x + (*(this->heroSkin)).Height() +8, .y=coords.y+8+(*(this->heroSkin)).Height()});
+
+  replaceweakwall({.x=coords.x+(*(this->heroSkin)).Height()/2, .y=coords.y-8});
+  replaceweakwall({.x=coords.x +(*(this->heroSkin)).Height()/2, .y=coords.y+(*(this->heroSkin)).Height()+8 });
+  replaceweakwall({.x=coords.x -8, .y=coords.y+(*(this->heroSkin)).Height()/2});
+  replaceweakwall({.x=coords.x +(*(this->heroSkin)).Height()/2 +8, .y=coords.y +(*(this->heroSkin)).Height()});
+
+
+  DrawLevel(*(this->level));
+}
+
+void Player::initLevelString()
+{
+
+	for (int i=0; i<40; ++i) {
+    this->levelinput.getline(this->level_string[i], 40);
+	}
 }
