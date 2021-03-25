@@ -10,20 +10,6 @@
 string
 -
 
-/Users/kirillyat/Developer/game/Player.cpp
-Player.h
-/Users/kirillyat/Developer/game/Player.h
-string
--
-cstring
--
-fstream
--
-iostream
--
-ctime
--
-
 /Users/kirillyat/Developer/game/Player.h
 Image.h
 /Users/kirillyat/Developer/game/Image.h

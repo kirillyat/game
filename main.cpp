@@ -112,6 +112,8 @@ int initGL()
   std::cout << "Controls: "<< std::endl;
   std::cout << "press right mouse button to capture/release mouse cursor  "<< std::endl;
   std::cout << "W, A, S, D - movement  "<< std::endl;
+  std::cout << "X - ATTACK  "<< std::endl;
+  std::cout << "HEALTH = 3 points  "<< std::endl;
   std::cout << "press ESC to exit" << std::endl;
 
 	return 0;
